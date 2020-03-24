@@ -339,14 +339,148 @@ img{
 }
 ```
 
-Float는 left, right, none가운데 하나를 값으로 줄 수 있다.
+Float는 left, right, none 중 하나를 값으로 줄 수 있다.
 
 Float 속성을 지니게되면 부모의 높이를 인지할 수 없어 내용이 밖으로 튀어나는 현상이 발생한다.
 
 Float를 사용하기위해서는 몇가지 방법을 사용하여야한다.
 
-1. div마지막에 <'br class="clear">
-clear: both; 를 사용하여 해결한다.
-2. div에 overflow:hidden; 값을 주어서 해결한다.
-3. 바깥 div를 float시켜 float 높이를 인지시켜 그높이만 큼을 차지하게됨 그러나 그렇게 되면 width값을 추가해야함
+```html
+예시1
+<div class="wecode-box">
+    <img class="float-left" src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/logo/wecode_logo_bk.png">
+    <p>아래에 clear요소를 두거나</p>
+    <br class="clear">
+</div>
 
+예시2
+<div class="wecode-box last-box">
+    <img class="float-right" src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/logo/wecode_logo_bk.png">
+    <p>이게 젤 낫네</p>
+</div>
+
+예시3
+<div class="wecode-box float-right">
+    <img class="float-right" src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/logo/wecode_logo_bk.png">
+    <p>.wecode-box도 float이거나</p>
+</div>
+```
+
+```css
+.wecode-box {
+  border: 1px solid #ddd;
+}
+
+.float-left {
+  float: left;
+}
+
+.float-right {
+  float: right;
+}
+
+.clear {
+  clear: both;
+}
+
+.width-100 {
+  width: 100%;
+}
+
+.last-box {
+  overflow: hidden;
+}
+``` 
+
+1. div마지막에 다른태그를 사용하여 clear 속성을 부여한다. 예시 1이 사용 예시이다. clear: both; css 속성을 사용하여 해결한다.
+2. div에 overflow:hidden; 값을 주어서 해결한다.
+예시 2이 사용 예시이며, 사용시 지정된 박스 밖으로 img나 내용이 빠져나가지 않는다. 그러나 넘어간 부분은 잘리게 된다.
+3. 바깥 div를 float시켜 float 높이를 인지시켜 그높이 만큼을 차지하게됨 그러나 그렇게 되면 width값을 추가해 주어야 하며 예시 3이 사용 예시이다.
+
+------
+## Media tag
+반응형 디자일을 만들기위한 태그라고 할 수 있다. Media 태그를 사용하면 특정 width값이 되었을때 그 넓이에 맞는 css를 출력하게 할 수 있다.
+```css
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+  body {
+       background-color: yellow;
+  }
+}
+```
+위의 css는 최소 넓이 320px ~ 최대 480px 사이에서는 배경색을 노란색으로 출력하게하는 css이다.
+
+이렇게 css를 사용하게되면 desktop 혹은 모바일 디바이스에서도 상황에 맞게 css를 출력하여 반응형 디자인을 구성할 수 있다.
+
+------
+## multi column
+해당 기능은 다단 / 컬럼 으로 신문과 같이 단을 나눌때 사용할 수 있는 기능이다.
+```css
+      .column{
+        text-align: justify;
+        column-count: 4;
+        column-width: 200px;
+        column-gap:30px;
+        column-rule-style: solid;
+        column-rule-width: 5px;
+        column-rule-color: red;
+      }
+```
+- column-count: 단을 나눌 개수를 정한다.
+- column-width: 단의 넓이를 정한다.
+- column-gap: 단사이의 간격을 정한다.
+- column-rule-style: 단 중간에 선, 점선등을 표현 할 수 있다.
+- column-rule-width: 단 중간의 선의 굵기이다.
+- column-rule-color: 단 중간의 선의 색을 정한다.
+
+------
+
+## felex
+레이아웃을 잡을때 사용하는 css
+felex는 아래와 같은 느낌으로 구성된다.
+```html
+<container>
+  <item></item>
+  <item></item>
+</container>
+```
+flex는 container와 item에게 부여되는 속성이 나누어져 있다.
+| container | item |
+|:---:|:---:|
+| display | order |
+| flex-direction | flex-grow |
+| flex-wrap | flex-shrink |
+| flex-flow | flex-basis |
+| justify-content | flex |
+| align-items | align-self |
+| align-content | |
+
+컨테이너에 display 속성을 display:flex; 로 만드는것 부터 시작
+   
+적용하면 열방향으로 정렬되던것 (위에서 아래로)
+행방향으로 정렬이 바뀜(좌에서 우)
+
+### flex-direction
+- flex-direction: row; : flex-direction의 기본값은 row로 지정되어 있음
+- flex-direction:row-reverse;로 지정하면 반대로 정렬됨
+- flex-direction:column;은 위에서 아래로 정렬됨
+- flex-direction:column-revers; 위에서 아래 뒤집혀 정렬됨
+- flex는 기본적으로 각각의 태그가 각각의 방향의 전체를 차지함
+
+### flex-basis;
+flex의 방향에 해당하는 크기를 지정함
+
+### flex-grow;
+여백을 균등하게 분할함
+
+### flex-shrink;
+공간을 고정해버림 크기를 줄여도 줄어들지 않음
+
+### flex-wrap;
+기본값은 nowrap이며 wrap을 지정하면 컨테이너보다 아이템들의 합의 크기가 크면 아이템을 줄바꿈함 wrap-reverse하면 역순으로 배치;
+
+### align-items;
+기본값은 stretch이며 flex가 적용되면 수직방향에 대한 정렬을 함
+align-items사용시 사용하고자 하는 container의 height를 100%혹은 크기를 지정해야 해당 크기에 맞추어서 이동
+
+### justify-content;
+flex-start가 기본이며 수평방향에대한 정렬을 함
