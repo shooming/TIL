@@ -280,5 +280,5 @@ def like_food(food1="치킨", food2):
 
 like_food("피자") # 에러가 발생한다.
 ```
-위와 같은 default value parameter는 에러가 발생하게 된다. 그 이유는 함수 parameter 전달시 생략하는 parameter가 food1인지 food2인지 알 수 없기 때문에 피자를 전달하면 positional arguments로 생각하면 food1의 위치이다 하지만 치킨이라는 값이 기본값으로 되어있다 하지만 food2에 parameter는 전달되지 않았다. 하지만 위치는 food1이다 그럼 food2로 보내야 하는가? 파이썬은 고민하게된다. 그래서 에초에 이런 문법을 사전에 차단하려고 하는것 같다. 그러므로 Default Value값을 뒤에 배치해야한다. 그리고 food2에도 기본값을 정의해 주어 둘다 default value를 가지면 에러가 발생하지 않는다.
+위와 같은 default value parameter는 에러가 발생하게 된다. 그 이유는 함수 parameter 전달시 생략하는 parameter가 food1인지 food2인지 알 수 없기 때문에 피자를 전달할때 positional arguments로 생각하면 food1의 위치이다 하지만 치킨이라는 값이 기본값으로 되어있다 하지만 food2에 parameter는 전달되지 않았다. 하지만 위치는 food1이다 그럼 food2로 보내야 하는가? 파이썬은 고민하게된다. 그래서 에초에 이런 문법을 사전에 차단하려고 하는것 같다. 그러므로 Default Value값을 뒤에 배치해야한다. 그리고 food2에도 기본값을 정의해 주어 둘다 default value를 가지면 에러가 발생하지 않는다.
 like_food(food=2"피자")로 지정하여 보내도 `SyntaxError: non-default argument follows default argument`를 뱉어낸다.
