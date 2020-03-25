@@ -394,39 +394,45 @@ def 함수명(a, b, c, an=1, sz=3, *이름, q1 , q2="랜덤", q3, q4="게임", *
 모든 Arguments의 구성은 저런 형태로 구성하면된다.
 
 `a, b, c`는 positional arguments
+
 `an=1, sz=3`은 Keyword Arguments
- - 지금의 순서대로 Keyword Arguments가 뒤에 배치되는 이유는 positional arguments보다 앞에 배치되면 섞여져서 전달시 인자가 전달될 곳을 찾지 못하므로 에러가 발생한다.
+ - 지금의 순서대로 Default Value parameter가 뒤에 배치되는 이유는 positional arguments보다 앞에 배치되면 섞여져서 전달시 인자가 전달될 곳을 찾지 못하므로 에러가 발생되기 때문이다.
 
-`*이름` positional arguments의 초과분은 다 이곳에 저장된다.
+`*이름` positional arguments의 초과분은 다 이곳에 저장된다. ex) (5, 6, 90)
 
-`q1 q3` Keyword-Only Arguments with no varargs
-`q2 q4` Non-Default Keyword-Only Arguments Syntax
+이 위로보면 key / value 값 형태가 아닌 value값만을 가지는 arguments들이 먼저 배치되어 있다
+<br/>
 
-```python
-def compute(a, b, c, print_args=True, intype=int,  *more, operation, print_result=False, return_type, ignore_exceptions=True, **kwargs):
-     if print_args: 
-         print(a, b, c, print_args, intype, more, operation, print_result, return_type, ignore_exceptions, kwargs)
-     result = None 
-     try:
-         arr = (a, b, c) + more
-         if operation == "count": 
-             result = len(arr)
-         elif operation == "sum": 
-             result = sum(arr)
-         else: 
-             print("Unknow Operation")
-             raise NotImplementedError("Unknow Operation. Operation Not Implemented")
-     except:
-         import sys
-         print("Error performing operation: {}: {}".format(operation, sys.exc_info())) 
-         if not ignore_exceptions:
-             raise
-     if print_result: 
-         print("Result is: {}".format(result))
-     return result and return_type(result)
-```
+`q1 q3` Non-Default Keyword-Only Arguments
+    
+`q2="랜덤" q4="게임"` Keyword-Only Arguments with no varargs
+
+- 뒤쪽부분은 앞쪽과 다르게 default 값과 상관없이 무작위로 배치되어 있다. 그 이유는 Keyword-Only Arguments는 무조건 keyward와 값을 같이 전달해 주어야하기 때문이다 자세한 내용은 뒤에서 할 예정이다.
+
+`**이름` 이 부분은 Keyword-Only Arguments이 다 배치되고 parameter값이 초과되는 내용이 전부 저장된다.
+keyward = value 형태를 가지기 때문에 리스트가아닌 딕셔너리의 형태로 저장된다. ex) {'지역'='서울', '국가'='한국'}
+
+이렇게 배치되는 이유에 대해 생각해 볼 필요가 있다.
+
+positional arguments 관련된 값을 앞쪽에 배치하는 이유는 순서에 영향을 많이 받기 때문이다. 그에 비해
+Keyword-Only는 Keyword값이 무조건 들어가야하므로 arguments는 자기가 가야할 parameter의 위치를 알고 있다 그렇기 때문에 순서에 영향을 덜 받기 때문에 뒤쪽으로 배치된것이다
+
+중간에 `*이름` `**이름` 들어가는 이유는 해당 부분에서 초과되는 값을 소화해 내기 위해서이다. *뒤의 이름은 예시를 위해 이름으로 작성한 것이므로 사용시 본인의 필요에 의한 이름으로 지정하는 것이 좋다.
 
 ### Keyword-Only Arguments with no varargs
-
+```python
+def compare(a, b, *, key=None):
+    . . . 
+```
+위의 예시를 보자 * 뒤에 값이 지정되어 있지않다
+그럼 어떻게 될까 일단 왜 *를 사용하는지 알아보자
+`PEP 3102 -- Keyword-Only Arguments` 파이썬 공식 문서를 보면  Keyword-Only Arguments는 varargs가 선언 되어있어야만 사용할 수 있게되어이다 하지만 굳이 값을 받지는 않지만 평소에는 기본출력이다가 필요할때만 스위치식으로 사용하기 위해 Keyword-Only Arguments 사용하려고 한다. 하지만 사용하기위해선 *varargs의 불필한 정의를 해야한다 이때 예외처리를 하기위해 *를 사용한다. 그렇게되면 *varargs가 없어도 사용이 가능해진다.
 
 ### Non-Default Keyword-Only Arguments Syntax
+```python
+def compare(a, b, *, key):
+    . . .
+```
+위의 예제에서는 예외처리 후 key를 keyword-only Arguents로 선언한것이다. 하지만 keyword only는 keword로 parametre를 조절한다 하지만 positional arguments로 값을 3개를 작성하고 해도 keyword가 지정된게 아니므로 key에 값이 들어가지 않게된다. 즉 `key="무언가"`값이 없다면 에러가 발생하게 된다.
+
+그래서 Keyword-Only Arguments 예외처리 사용시에는 default값을 설정해주어야한다 아니면 쓸때마다 keyward로 값을 전달해야한다.
