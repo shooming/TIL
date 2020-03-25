@@ -426,7 +426,7 @@ def compare(a, b, *, key=None):
 ```
 위의 예시를 보자 * 뒤에 값이 지정되어 있지않다
 그럼 어떻게 될까 일단 왜 *를 사용하는지 알아보자
-`PEP 3102 -- Keyword-Only Arguments` 파이썬 공식 문서를 보면  Keyword-Only Arguments는 varargs가 선언 되어있어야만 사용할 수 있게되어이다 하지만 굳이 값을 받지는 않지만 평소에는 기본출력이다가 필요할때만 스위치식으로 사용하기 위해 Keyword-Only Arguments 사용하려고 한다. 하지만 사용하기위해선 *varargs의 불필한 정의를 해야한다 이때 예외처리를 하기위해 *를 사용한다. 그렇게되면 *varargs가 없어도 사용이 가능해진다.
+`PEP 3102 -- Keyword-Only Arguments` 파이썬 공식 문서를 보면  Keyword-Only Arguments는 varargs가 선언 되어있어야만 사용할 수 있게되어이다 하지만 굳이 값을 받지는 않지만 평소에는 기본출력이다가 필요할때만 스위치식으로 사용하여 다른출력을 하기위해 Keyword-Only Arguments 사용하려고 한다. 하지만 사용하기위해선 *varargs의 불필한 정의를 해야한다 이때 예외처리를 하기위해 *를 사용한다. 그렇게되면 *varargs가 없어도 사용이 가능해진다.
 
 ### Non-Default Keyword-Only Arguments Syntax
 ```python
