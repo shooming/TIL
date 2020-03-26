@@ -697,3 +697,168 @@ del dictionary_name[삭제할 key]
 list와 같이 del을 사용하여 삭제할 key값을 넣으면 해당 key와 value가 삭제된다.
 
 ------
+
+## For Loops
+```python
+for element in list:
+    반복문 출력
+```
+for을 사용하는 예이다 list의 요소를 한번에 한개씩 꺼내어 for구문 안에 있는 코드를 실행한다. tuple, set도 사용가능하다.
+
+### Break
+for을 사용중 중간에 for문을 종료하고 싶을 때사용 하는 방법이다.
+```python
+num = [1, 2, 3, 4, 5, 6]
+
+for element in num
+    if element == 3:
+        print("3을 찾았으니까 for문은 종료")
+        break
+    else:
+        print("3을 찾는 중입니다.")
+```
+저렇게 break를 사용하면 3이후로는 더 이상 확인을 안하고 for문을 종료하는 것이다.
+
+### Contunue
+```python
+for element in num
+    if element != 3:
+        print("3아니네요")
+        continue
+    print("이것은 3이네요")
+```
+Contunue는 interation(list가 가진 요소)으로 넘길 때 사용한다. 3이아니면 `3아니네요`만 출력한다.
+
+
+### Nested For Loops
+For문은 중첩이 가능하다.
+```python
+numbers1 = [1, 2, 3, 4, 5]
+numbers2 = [10, 20, 30, 40, 50]
+
+for num1 in numbers1:
+    for num2 in numbers2:
+        print(f"{num1} * {num2} == {num1 * num2}")
+```
+------
+## While Loops
+While은 python에서 사용하는 다른 방법의 반복구문이다.
+```python
+while <조건문>:     
+    <수행할 문장1>     
+    <수행할 문장2>     
+    <수행할 문장3>     
+    ...
+    <수행할 문장N>
+```
+while문은 list나 tuple에서 값을 꺼내오는 방식이 아닌 `조건`을 지정하여 반복문을 수행하므로 list나 tuple을 기반으로 하지 않아도 된다. `조건 == True`일 동안 반복문이 실행된다.
+
+```python
+num = 0
+
+while number <= 10
+    print(num)
+    num += 1
+아래와 같이 출력됨.
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+```
+### Break & Continue
+```python
+number = 0
+
+while number <= 10:
+    if number == 9:
+        break
+    elif number <= 5:
+        number += 1
+        continue            
+    else:
+        print(number)
+        number += 1
+> 6
+7
+8
+```
+while에도 Break, Contunue는 사용이 가능하다. 기능, 사용방법도 같다.
+
+### While Else
+```python
+while <조건문>:
+    <수행할 문장1>     
+    ...
+    <수행할 문장N> 
+else:
+    <while문이 종료된 후 수행할 문장1>  
+    ...
+    <while문이 종료된 후 수행할 문장N>
+```
+
+조건문인 if가 else를 통해 False조건문을 실행시킬 수 있는것 처럼 while 또한 조건이 flase가 되어 반복 종료시 else문을 실행시킨다.
+
+------
+
+## Complex Dictionary
+
+### List of Dictionaries
+
+```python
+  klegue = [
+    {
+    "구단": "강원 FC",
+    "리그참가": 2009,
+    "연고지": "강원도(춘천)",   
+    "주 경기장": "춘천송암레포츠타운"
+    },
+    
+    {
+    "구단": "광주 FC",
+    "리그참가": 2011,
+    "연고지": "광주광역시",   
+    "주 경기장": "광주월드컵경기장"
+    }
+  ]
+```
+위와 같이 dictionary를 list에 넣어 여러개의 데이터를 관리할 수 있다.
+하지만 이러한 방식에는 약간의 문제가 있다.
+
+```python
+for legue in klegue:
+	if legue["구단"] == "강원 FC":
+		print(legue["주 경기장"])
+```
+원하는 dictionary에 정확하게 접근할 방법이 없어서 for문을 돌려 특정 key로 해당 dictionary를 찾아 원하는 값을 찾아내야한다. 이러한 방식은 list안의 요소가 늘어나면 시간이 더 늘어날 것이다.
+
+### Nested Dictionary
+위 방식을 해결하여 좀더 편리하고 효율적으로 데이터를 관리할 수 있게해주는 방식이다.
+아래 예시를 보자
+```python
+  klegue = {
+    "강원 FC" : {
+    "구단": "강원 FC",
+    "리그참가": 2009,
+    "연고지": "강원도(춘천)",   
+    "주 경기장": "춘천송암레포츠타운"
+    },
+    
+    "광주 FC" : {
+    "구단": "광주 FC",
+    "리그참가": 2011,
+    "연고지": "광주광역시",   
+    "주 경기장": "광주월드컵경기장"
+    },
+}
+
+print(klegue["강원 FC"]["주 경기장"])
+# 춘천송암레포츠타운 출력
+```
+List of Dictionaries와는 다르게 list가 아닌 Dictionary안에 Dictionary를 넣음으로서 Dictionary안의 데이터를 key값으로 특정하여 가져오기 쉽게되었다.
