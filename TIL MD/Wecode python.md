@@ -862,3 +862,362 @@ print(klegue["강원 FC"]["주 경기장"])
 # 춘천송암레포츠타운 출력
 ```
 List of Dictionaries와는 다르게 list가 아닌 Dictionary안에 Dictionary를 넣음으로서 Dictionary안의 데이터를 key값으로 특정하여 가져오기 쉽게되었다.
+
+------
+
+## Nested Function
+for, if문을 중첩하는 것처럼 함수안에 함수를 중첩하여 작성하는 것을 말한다.
+
+```python
+def parent_function():
+    def child_function():
+        print("this is a child function")
+
+    child_function()
+
+parent_function()
+> "this is a child function"
+```
+이렇게 만들어진 함수는 최상단의 부보를 호출애야 내부 자식 함수ㄹ도 작동시킬 수 있다.
+
+이렇게 중첩하는 방식을 사용하는 이유는 2가지가 있다.
+
+1. 가독성
+
+함수 안의 코드 중 반복되는 코드가 있다면 중첩함수로 선언하면 부모 함수의 코드를 효과적으로 관리하여 가독성을 높일 수 있다.
+
+```python
+def print_all_elements(list_of_things):
+    ## 중첩함수 선언
+    def print_each_element(things):
+        for thing in things:
+            print(thing)
+
+    if len(list_of_things) > 0:
+        print_each_element(list_of_things)
+    else:
+        print("There is nothing!")
+```
+
+2. Closure
+
+중첩 함수를 사용하는 가장큰이유이다.
+
+충첩 함수가 부모 함수의 변수나 정보를 가두어 사용하는 것을 closure이라고 한다. 그리고 부모함수는 중첩 함수를 return해 준다.
+이렇게 하면 부모함수의 변수를 외부로부터 직접적인 접근은 격리하면서도 중첩 함수를 통해서 격리된 부모함수의 변수를 사용한 연산은 가능하게 해준다.
+
+closure을 사용하는 경우는 어떤 정보를 기반으로 연산시 기반이되는 저오보는 접근을 제한 하여 노출이 되거나 수정이 되지 못하게 하고 싶을때 사용한다.
+
+factory 패턴을 구현할때 사용되는데 함수나 오브젝트를 생성하는데 사용도니다. Factory에서 뭔가를 생성해 내기 위해서는 설정값이 필요한데 그 설정값을 노출하지 않아서 수정이 불가능하게 하면서 해당 설정값을 기반으로한 연산을 할 수 있는 함수를 만들때 closure를 사용할 수 있다.
+
+```python
+case 1
+def calculate_power(number, power):
+    return number ** power
+
+calculate_power(2, 7)
+# 128 출력
+
+case 2
+def calculate_power_of_two(power):
+    return 2 ** power
+
+calculate_power_of_two(7)
+# 128 출력
+
+case 3
+def generate_power(base_number):
+    def nth_power(power):
+        return base_number ** power
+
+    return nth_power
+
+calculate_power_of_two = generate_power(2)
+calculate_power_of_two(7)
+# 128 출력
+```
+같은 결과를 출력하는 함수 3가지 경우이다.
+전부 원하는 수는 승을 구하는 함수이다
+
+1. case1
+`calculate_power()`함수에 승을 구할 수와 승의 횟수를 넣으면 된다.
+그때마다 원하는 값을 뽑을 수 있지만 배번 2개의 인자를 넣어서 보내주어야한다.
+
+2. case2
+`calculate_power_of_two()`함수에 몇승을 구할 건지 적으면된다.
+승을 구함 수를 2로 고정하여 횟수만 정해주는 변수 하나만 보내면된다. 하지만 2로 고정되있어서 나중에 다른값으로 바구고 싶다면 함수를 수정해야함
+
+3. case3
+여기가 closure가 사용된 부분이다. 일단 결과를 보면 128이 정상적을 출력이 되었다.
+`calculate_power_of_two = generate_power(2)`
+`calculate_power_of_two(7)`
+위의 함수 호출부분을 보면 2번의 호출을한다. 1번째는 base_number의 인자를 설정해 주는 부분이다. 저렇게하면 부모 함수의 parameter에 인자가 저장되어진다. 그 다음 `generate_power(2)`가 저장된 `calculate_power_of_two(7)` 함수를 호출하면 power의 값으로 7이 전달된다. 만약 2의 승이 아닌 다른수로 바꾸고 싶다면
+`calculate_power_of_two = generate_power(9)`이런 식으로 바꾸어 주면된다.
+
+------
+
+## Decorator
+Decorator는 함수앞에 붙여서 사용되는 함수라고 생각하면 된다. 그럼 아무 함수나 Decorator로 사용 할 수는 없다 중첩 함수(Nested function)를  리턴하는 함수만 Decorator로 사용이 가능하다. 이렇게 사용하는 이유는 chain of functions, 즉 여러개의 함수가 연속적으로 호출이 자동으로 되게 해주는 것이다. closure이라고 생각해 볼 수 있다.
+
+1. 일반적인 Decorator
+```python
+def decodeco(func):
+    def child_decodeco(*args, **kwargs):
+        print("%s %s" % (func.__name__, "함수 작동전"))
+        result = func(*args, **kwargs)
+        print("%s %s" % (func.__name__ , "함수 작동후"))
+        return result
+    return decorator
+
+@decodeco
+def plus(x, y):
+    print(x + y)
+    return x + y
+
+plus(1,2)
+
+# plus 함수 작동전
+# 3
+# plus 함수 작동후
+```
+위와 같은 경우는 평범하게 Decorator를 사용한는 경우이다.
+
+일단 함수를 천천히 확인해보자
+
+가장먼저 살펴볼 부분은 함수 호출이다
+`plus(1,2)` 1,2를 인자로 plus함수를 호출한다.
+
+```python
+@decodeco
+def plus(x, y):
+    print(x + y)
+    return x + y
+```
+그 다음은 plus()함수부분으로 오는데 앞에 `@decodeco`가 있다.
+@decodeco는 Decorator이다. 이렇게되면 plus 함수 이전에 @decodecor가 먼저 실행되게된다.
+
+```python
+def decodeco(func):
+    def child_decodeco(*args, **kwargs):
+        print("%s %s" % (func.__name__, "함수 작동전"))
+        result = func(*args, **kwargs)
+        print("%s %s" % (func.__name__ , "함수 작동후"))
+        return result
+    return decorator
+```
+`decodeco(func)`decodeco 함수로 오게되면 첫번째 parameter로 `func`를 받는다 저 부분에는 `plus()`함수를 받게된다. 이제 closure과 같이 작동하게되는데 `decodeco()`함수는 내부 함수를 return한다 `child_decodeco()`함수로 오게되고 내부의 `func`는 부모의 parameter에 저장된 인자를 사용할 수 한다. 그리고는 결과값을 return한다.
+
+2. 파라메터를 가지는 Decorator
+```python
+def decodeco_with_param(param):
+    def wrapper(func):
+        def decorator(*args, **kwargs):
+            print(param)
+            print("%s %s" % (func.__name__, "함수 작동전"))
+            result = func(*args, **kwargs)
+            print("%s %s" % (func.__name__ , "함수 작동후"))
+            return result
+        return decorator
+    return wrapper
+
+@decodeco_with_param("여기는, 데코레이터!")
+def plus(x, y):
+    print(x + y)
+    return x + y
+
+func(1,2)
+```
+
+decorator는 선언된 뒤의 함수만을 전달받는게 아니라 parametor 값을 추가해서 보내줄 수 있다. 원리는 1번째 방법과 같지만 부모함수의 parmetro에 저장된는 순서를 파악해 둘 필요가 있다.
+
+`@decodeco_with_param("여기는, 데코레이터!")`이런식으로 파라메터값을 가진다면
+
+```bash
+@데코레이터의파라메터 -> @데코레이터 뒤에 선언된 함수 -> 호출시 받은 인자
+```
+위의 순으로 차례로 들어가게된다.
+
+    `param = "여기는, 데코레이터!"'
+    'func = def plus'
+라고 생각하면된다.
+
+------
+
+## Scope
+scope는 범위라는 뜻으로
+객체(변수, 함수)가 유효한 범위를 말한다.
+
+Python에서 scope은 항상 객체가 선언된 지점에서 위로는 상위 객체 까지, 아래로는 모든 하위 객체들과 그 안에까지가 범위
+
+범위는 크게 4가지가 있다.
+
+- Local Scope
+- Enclosed Scope
+- Global Scope
+- Built-in Scope
+
+Local Scope의 범위가 가장 제한적이며, Built-in Scope은 범위가 가장 크다
+
+1. Local Scope
+Local scope을 가진 변수나 함수는 특정 범위에서만 유효하다.
+주소 함수안에 선언된 변수 혹은 함수를 말한다.
+
+```python
+def localscope():
+    a = 1 # a는 local scope을 가지는 변수이다.
+    print(a)
+
+print(a) #local scope을 벗어나서 출력되지 않고 에러가 뜸 
+```
+위 예제와 같이 한 지역에서만 유지성을 가지며 그 곳을 빠져나오면 바로 기능을 상실해 버린다.
+
+2. Enclosed Scope
+Enclosing Scope는 중첩함수가 있을때 적용되는 scope이다.
+부모 함수에 선언된 변수가 중첩 함수 안에서도 유효한 범위를 가진다.
+```python
+def 부모():
+  a = 2
+  print(a)
+
+  def 자식():
+    b = 7
+    print(a * b) # a=2 , b=7 14 출력
+
+자식()
+print(b) # b는 자식()함수에서만 유효하므로 에러가 발생됨
+```
+위의 예제를 보면 a는 부모()함수 선언되어 자식()함수보다 상위에 있으므로 자식()함수까지 변수가 유효하지만 b는 자식()함수에서만 유효하기 때문에 print(b)에서 에러가 발생된다.
+
+3. Global Scope
+Global Scope은 함수 안에서 선언된 것이 아닌 함수 밖에서 선언된 변수나 함수이다.
+
+global scope을 가지고 있는 변수와 함수들은 선언된 지점이 해당 파일에서 가장 바깥쪽에서 선언되므로 해당 파일에서 선언된 지점 아래로는 다 유효한 범위를 가지고 있습니다. Global scope 이라고 한다.
+
+4. Built-in Scope
+Built-in Scope은 scope중 가장 광범위하다
+python안에 내장되어 제공하는 함수 또는 속성들이 Built-in Scope을 가진다. 그러므로 따로 선언하지 않아도 모든 파일에서 유효한 범위를 가진다. ex)len(),int()
+
+## Shadowing
+이렇게 변수를 적용하다보면 변수가 겹치면서 문제가 생기는 경우가 생긴다. 그렇기 때문에 scope들의 순서에 유의해야한다.
+
+```bash
+(범위 좁음) Local -> Enclosing -> Global -> built-in (범위넓음)
+```
+
+좁은 범위에 위한 scope이 상위 scope을 가지게 된다.
+
+```python
+a = 2
+  
+def shadowing():
+  a = 1
+  print(a) # 1 출력
+
+shadowing() # 1 출력
+
+print(2) # 2 출력
+```
+위의 예제를 보면 local의 a변수가 enclosing의 a변수와 겹치는 모습을 볼 수 있다.
+그렇게되면 `shadowing()`함수 안의 a가 enclosing의 a를 가리게되면서 `shadowing()`함수 안에서는 `a = 1` 이 된다.
+
+하지만 함수 밖으로 나오게되면 다시 `a = 2`의 영향을 받게된다.
+
+이렇게 상위 scope의 하위 scope에 의해 가려지는 현상을 Shadowing이라고 한다.
+
+------
+
+## Class
+Class는 하나의 공통인 카테고리에 그 곳에 속하는 object들의 구성을 이루어진다.
+
+예를들면 car를 예로 들면 차를 만드는 회사로는 bmw, audi, benz가있다고 하자 이때 class는 차라고 할 수 있고 car라는 공통점을 가지는 제조사들은 object(객체)가 된다.
+
+1. Class 정의
+```python
+class ClassName:
+    클래스 내용
+```
+class를 선언하기위해서는 class키워드를 사용하면된다.
+
+이때 몇 가지 주의사항이 있다.
+
+**class이름의 단어의 앞글자는 대문자를 사용한다.**만약 여러단어로 구성되어 있다면 각 단어 앞글자는 대문자로 해서 단어를 구분한다.
+ex)ThisNameTooLong 이런느낌으로 작성한다.
+
+```python
+class Car:
+    pass
+
+bmuw = Car()
+```
+클래스를 선언하고 호출하는 예이다.
+Car는 class이며, Car class를 실체(instance)화 한것이 bmw라는 객체(object)인 것이다.
+
+## Class의 attribute(속성)
+class에 정의되는 공통 요소들을 전문어로 class의 attribute(성질 혹은 속성)이라고 함.
+
+class 안에서 정의해주는 함수(function)는 function이라고 하지 않고 method 라고 한다.
+
+```python
+class Car:
+    def __init__(self, maker, model, horse_power):
+        self.maker       = maker
+        self.model       = model
+        self.horse_power = horse_power
+
+hyundai = Car("현대", "제네시스", 500)
+```
+위의 예제는 class를 선언하고 호출하는 예제이다.
+
+class는 `Car`로 선언하였고
+`def __init__`함수를 정의하였다.
+
+`__init__` special methods로 class가 실체화 될때 사용된다.
+
+```python
+def __init__(self, maker, model, horse_power):
+
+hyundai = Car("현대", "제네시스", 500)
+# self   class maker  model      hores_power
+```
+__init__함수와 호출을 보면 호출을 보면 parameter는 4개이지만 arguments는 3개밖에 없다. self는 class의 실체를 가르킨다.
+그렇기 때문에 self = hyundai가 된다. 클래스를 실체화 할때 python이 해당 객체(self)를 자동으로 __init__함수에 넘겨준다.
+
+
+- __init__ 메소드는 클래스가 실체화 될때 자동으로 호출이 된다.
+- __init__ 메소드의 self 파라미터는 클래스가 실체화된 객체를 넘겨주어야 하며, 파이썬이 자동으로 넘겨준다.
+- __init__ 메소드의 self 파라미터는 항상 정의되어야 있어야 하며 맨 처음 파라미터로 정의 되어야 한다 (그래야 파이썬이 알아서 넘겨줄 수 있으므로)
+
+이제 함수 내부를 보면
+```python
+def __init__(self, maker, model, horse_power):
+    self.maker       = maker
+    self.model       = model
+    self.horse_power = horse_power
+```
+maker, model, horse_power를 받아 self라는 객체로 저장한다.
+
+## Class Method
+```python
+class Car:
+    def __init__(self, maker, model, horse_power):
+        self.maker       = maker
+        self.model       = model
+        self.horse_power = horse_power
+
+    def honk(self):
+        return f"{self.maker} 빠라바라빠라밤"
+
+hyundai = Car("현대", "제네시스", 500)
+hyundai.honk()
+> "현대 빠라바라빠라밤"
+```
+class에는 __init__메소드 말고 다른메소드도 추가가 가능하다.
+__init__메소드에 저장된 값을 활용하여 다른 메소드를 이용한다.
+그렇기 때문에 모든 메소드의 parametor의 첫번째는 self가 들어가야한다.
+
+그럼 객체의 메소드 호출하려면 어떻게 하면될까
+`hyundai.honk()`이런식으로 dot notation을 활용하여 호출한다.
+
+<객체>.<메소드>
+
+이런식으로 클래스 위주로 코드를 작성하는것을 object oriented programming(객체 지향 프로그래밍)이라고 한다.
