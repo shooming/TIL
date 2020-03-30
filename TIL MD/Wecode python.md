@@ -1440,7 +1440,9 @@ Abosolute path와 다르게 짧은 경로인것을 확인할 수 있다.
 .(dot)은 현재위치를 이야기하며, 상위 디렉토리는 ..(dot 2개)로 나타낸다.
 
 ## sys.modules 와 sys.path의 차이점
-sys.modules은 현재 로딩되어있는 모듈들을 딕셔너리 형태로 나타내며, sys.path는 파이썬 라이브러리가 설치되어 있는 디렉터리를 보여준다. sys.modules은 이미 import한 module을 보여준다. sys.path는 환경 변수에서 초기화 한 PYTHONPATH 및 설치에 따른 기본값을 말하는 것이다.
+sys.modules은 현재 로딩되어있는 모듈들을 딕셔너리 형태로 나타내며, sys.path는 파이썬 라이브러리가 설치되어 있는 디렉터리를 보여준다. sys.modules은 이미 import한 module을 보여준다. sys.path는 환경 변수에서 초기화된 PYTHONPATH 및 설치시 기본값에 따른다.
+
+아래는 두가지를 출력했을때 모습이다.
 ```python
 >> sys.modules
 
