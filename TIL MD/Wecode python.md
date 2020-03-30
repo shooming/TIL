@@ -1497,3 +1497,50 @@ relative path는 상대경로로 루트 디렉토리를 포함하지 않는 주�
 위와 같이 나눌 수 있다.
 
 ------
+
+## Exceptions
+python은 에러상황에 따른 예외처리를 해줄 수 있다.
+
+그때 사용하는 방법이 try except이다. 그 에도 상황에 따른 다양한 출력을 줄 수 있다.
+
+아래의 예제를 통해서 설명하겠다.
+
+```python
+def return_elem_or_minus_one(index):
+    short_list = [1, 2, 3]
+    elem = 0
+
+    try:
+        elem = short_list[index]
+        print("이 문장은 exception이 발생하지 않으면 실행됩니다")
+    except IndexError:
+        print(f"이 문장은 Exception이 발생하면 실행 됩니다")
+        elem = -1
+    except Exception as e:
+        print(f"IndexError가 아닌 다른 종류의 Exception이 발생했습니다 ==> {e}")
+        elem = -1
+    else:
+        print(f"Exception이 발생하지 않았습니다!") 
+    finally:
+        print("이 문장은 exception 발생 여부와 상관없이 무조건 실행됩니다!")
+
+    return elem
+```
+`def return_elem_or_minus_one(index)`함수는 inddex라는 매개변수를 받아 인덱스 수를 제한한다 하지만 예제이므로 list에는 1,2,3값만 넣기로 했다.
+
+`try:`구문이다. 해당 구문은 일단 try 안의 문장을 실행시켜 에러가 있는지 체크를 한다 에러가 없다면 정상적으로 내용을 출력한다.
+
+`except IndexError:`는 `IndexError`는 inndex를 초과하해여 생기는 오류가 발생할때 실해되는 구문이다. 다른 에러로는 `ZeroDivisionError`가 있다.
+
+`except Exception as e:`는 IndexError가 아닌 오류가 날 경우 실행되는 구문이다. 그 뒤에 추가로 `as`문을 사용하여 에러메시지인 `Exception`을 변수 `e`에 저장하여 출력할 수 있다.
+```python
+print(f"IndexError가 아닌 다른 종류의 Exception이 발생했습니다 ==> {e}")
+
+# 출력
+# IndexError가 아닌 다른 종류의 Exception이 발생했습니다 ==> Exception
+```
+위와 같이 출력이 된다.
+
+`else:`else는  exception이 발생하지 않았을때 실행됩니다. 에러가 발생하지 않으면 정상 출력됩니다.
+
+`finally:` 이 부분은 위의 코드들이 에러가 발생하거나 발생하지 않아도 무조건 출력되는 부분이다.
