@@ -1221,3 +1221,275 @@ __init__메소드에 저장된 값을 활용하여 다른 메소드를 이용한
 <객체>.<메소드>
 
 이런식으로 클래스 위주로 코드를 작성하는것을 object oriented programming(객체 지향 프로그래밍)이라고 한다.
+
+------
+
+## Modules & Packages
+간단하게 Modules는 변수나 함수, 클래스 등을 모아 놓은 파일이고, Packages는 모듈을 모아 둔 것이라고 할 수 있다.
+
+이렇게 따로 모아서 사용하는 이유는 아래와 같다
+
+- 다른 파일에서 재사용가능
+- 전체 코드가 한 파일에 넣기 커졌을 때 여러 파일로 나누어 정리하기 위함이다.
+
+### Module 만들기
+module은 재사용하고 싶은 함수나 클래스, 변수를 담은 파일을 만들면 끝이다.
+
+그후 module을 불러와(import) 사용하기 위해서는 import 키워드를 사용하면된다.
+
+```python
+import <모듈 이름>
+```
+호출시에는 module이름뒤에 확장자 .py는 쓰지 않는다.
+
+```python
+<모듈이름>.<모듈에서 사용할 변수/함수/클랫 이름>
+
+testmodule.sumfunc()
+
+print(testmodule.num1_var)
+
+testmodule_class = testmodule.ModuleClass() 
+```
+불러온 모듈은 위와 같이 module이름을 쓰고 dot notation을 사용하여 작성하면된다.
+
+### Alternative ways to import modules
+module은 import키워드 외 from iport키워드를 사용해 모듈을 불러들일 수도 있다.
+```python
+from <모듈 이름> import <함수/변수/클래스1>, <함수/변수/클래스2>, ...
+```
+이 방법은 module에서 사용할 변수, 함수가 명확할때 사용하편하다.
+
+```python
+from my_module import my_module_func, my_module_var
+
+print(my_module_var)
+my_module_func()
+```
+위와 같이 모듈이름을 적지 않아도 바로 사용 가능하고 `import` 뒤에 `*`을 사용하면 해당 모듈의 모든 요소를 바로 import 가능하다.
+
+하지만 이렇게하는 것은 local scope과 충돌이 일어나면 원일을 찾기 어려움으로 권장되지 않는다.
+
+### Import As
+import 내용이 많아지면서 변수, 함수가 이름이 겹처 충돌하거나, 요소의 이름이 길 경우 사용한다.
+
+```python
+from my_module  import my_func as f1
+from my_module2 import my_func as f2
+from my_module3 import function_with_name_too_long as f3
+
+f1()
+f2()
+f3()
+```
+위와 같이 as를 사용하면 import 된 함수를 as뒤에 쓴 이름으로 대체하여 사용할 수 있다.
+
+```python
+import my_module as m1
+
+m1.my_module_func()
+```
+
+## Packages
+Packages는 module이 모여 있는것이고 .py가 모인 하나의 디렉토리를 package라고 부른다.
+
+packages 또한 모듈처럼 import해서 사용 가능하다.
+
+```python
+import <패키지명>.<모듈이름>
+from <패키지명>.<모듈이름> import <모듈내 함수, 변수 등>
+
+<패키지명>.<모듈이름>.<함수이름>
+```
+
+### Package Initialization
+package가 import될 때 초기 설정을 해줘야 할때 `__init__.py`파일을 통해 package 초기 설정을 가능하게 해준다.
+
+- import 경로 총 길이 줄임
+- package애서 import 할 수 있는 변수/함수/클래스 제한
+- 그 외 package가 import 될 때 먼저 실행되어야 하는 코드들
+
+위의 내용들을 할 수 있다.
+
+1. 길이줄임
+방법은 `__init__.py`에 한번 import해주면 된다.
+
+아래는 pkg라는 이름의 pkg안의 module을 불러오는 예시이다.
+
+```python
+# __init__.py를 설정하지 않은 package의 import
+import pkg.mod1
+
+pkg.mod1.func2()
+
+-----------------------
+
+# __init__.py를 설정한 package의 import
+
+# __init__.py
+from mod1 import func2
+
+# main.py
+from pkg import func2
+
+func2()
+```
+위와 같이 `__init__.py`를 설정해 놓고 package만 불러오면 이름이 길어지지 않고 빠르게 사용이 가능하다.
+
+2. 변수/함수/클래스 제한
+import 될때 module안에서 사용하는 함수나 변수가 외부에서 사용하는것을 막기 위해 `__all__`변수를 지정해 줍니다.
+
+`__all__`변수를 통해 지정된 함수/변수/클래스 만을 외부에서 사용이 가능하며 default값은 모든 함수/변수/클래스 이다.
+
+```python
+# __init__.py
+from mod1 import func2
+from mod2 import func3
+
+__all__ = ['func2', 'func3']
+
+# main.py
+from pkg import *
+
+func2()
+func3()
+func4() ## <== Error. func4 함수는 __all__ 에 정의되지 않았으므로 import 될 수 없음.
+```
+위와 같이 `__init__.py`에 list형태로 `__all__`을 정의해준다.
+
+지금 사용 가능한 값을 mod1의 func2, mod2의 func3이다. main.py를 보면 func2,func3의 사용은 문제가 없지만 func4사용은 설정되지 않았기 때문에 에러가 발생한다.
+
+## 다른 사람 package 사용
+```bash
+pip install Django
+```
+pip툴을 사용하여 다운로드 받을 수 있다.
+
+------
+
+## How import statement finds modules and packages
+
+### import serch 순서
+우리가 import 하려는 package가 있을때 package의 위치를 어디있는지 알기위해서 package의 위치를 탐색한다.
+
+1. sys.modules
+2. built-in modules
+3. sys.path
+
+python은 위의 순서로 import serch를 실시한다.
+
+1. sys.modules
+python이 mobule이나 package를 찾기 위해 가장 먼저 확인하는 곳으로 dictionary의 형태로 이미 import된 모듈과 package들을 저장하고 있다.
+그러므로 새로 import되는 모듈은 sys.moudles에서 찾을 수 없다.
+
+2. built-in modules
+파이썬에서 제공하는 공식 라이브러리들이다. 예시로는 random 모듈과 같은게 있다.
+
+3. sys.path
+sys.path는 python 라이브러리에 설치되어있는 디렉토리들을 보여준다. 이러한 경로들은 list의 형태로 저장되어잇으며 sys.path.append()를 사용하여 추가해 줄 수도있다.
+이러한 python은 위의 경로들을 탐색한뒤 sys.payh에도 import할 module이 없다면 에러를 출력한다.
+
+### Absolute Path & Relative Path
+built-in 모듈과 pip로 설치한 외부 모듈은 자동으로 site-packages라는 디렉토리에 설치가되며 sys.path에 등록되어있어 찾는데 문제가 되지 않는다.
+
+하지만 직접 만든 lodcal package는 import하려면 결로를 잘 선언해 주어야한다.
+
+```bash
+└── my_app
+    ├── main.py
+    ├── package1
+    │   ├── module1.py
+    │   └── module2.py
+    └── package2
+        ├── __init__.py
+        ├── module3.py
+        ├── module4.py
+        └── subpackage1
+            └── module5.py
+```
+위와 같은 프로젝트로 예를 들어보겠다.
+
+1. Absolute Path
+절대 경로를 뜻하며 import를 하는 파일이나 경로에 상관없이 항상 동일한 경로를 말한다.
+
+```python
+from package1 import module1
+from package1.module2 import function1
+from package2 import class1
+from package2.subpackage1.module5 import function2
+```
+위는 Absolute Path를 사용하여 import한 모습이다 모든 시작점의 기준이 my_app이라는 최상단 디렉토리에서 시작함 을 알 수 있다. 이렇게 my_app 프로젝트 내에서는 어느 파일, 어느 위치에서 import 하던지 경로가 항상 위와 같이 동일하게 되므로 absolute path 라고 하는 것이다. current directory라고 하는 현재의 프로젝트 디렉토리는 default로 sys.path에 포함된다. 그렇기 때문에 absolute path는 current directory 로 부터 경로를 시작하게 되는것이다.
+
+2. Relative Path
+Absolute Path는 어느 위치에서 import하던 원하는 module의 위치를 정확하게 가져올 수 있다는 장점이 있지만 경로가 길어질 수 있다는 단점이 있다.
+
+그와 반대로 Relative Path는 본인 자신의 위치를 기준으로 경로를 정의한다. relative path는 보통 local package 안에서 다른 local package를 import 할때 사용된다.
+
+```python
+# package2/module3.py
+
+from . import class1
+from .subpackage1.module5 import function2
+```
+위의 예시는 `package2/module3.py`에서 다른 package2의 class1과 package2의 하위 package인 subpackage1.module5의 function2의 함수를 import하는 모습이다
+
+Abosolute path와 다르게 짧은 경로인것을 확인할 수 있다.
+
+.을 사용해 위치를 표시한다.
+
+.(dot)은 현재위치를 이야기하며, 상위 디렉토리는 ..(dot 2개)로 나타낸다.
+
+## sys.modules 와 sys.path의 차이점
+sys.modules은 현재 로딩되어있는 모듈들을 딕셔너리 형태로 나타내지만, sys.path는 파이썬 라이브러리가 설치되어 있는 디렉터리를 보여준다. 즉 sys.modules은 이미 불러들여진 값에대에서만 체크한다면 sys.path는 환경 변수에서 초기화 한 PYTHONPATH 및 설치에 따른 기본값을 말하는 것이다.
+```python
+>> sys.modules
+
+{'heapq': <module 'heapq' from 'C:\Python3\lib\heapq.py'>, 'tkinter.filedialog':
+
+<module 'tkinter.filedialog' from 'C:\Python3\lib\tkinter\filedialog.py'>, 'functools':
+
+<module 'functools' from 'C:\Python3\lib\functools.py'>, 'random': <module
+
+'random' from 'C:\Python3\lib\random.py'>, ...<생략>...
+```
+
+```python
+sys.path
+
+['C:\\Python3\\Lib\\idlelib', 'C:\\WINDOWS\\system32\\python32.zip',
+
+'C:\\Python3\\DLLs', 'C:\\Python3\\lib', 'C:\\Python3', 'C:\\Python3\\lib\\site-packages']
+```
+
+## sys 도 import 해야하는 모듈입니다. 파이썬은 sys 모듈의 위치를 어떻게 찾을 수 있을까요?
+sys module은 내장 모듈임으로 built-in modules에서 찾을 수 있다. 
+```python
+import sys
+
+>>>sys.builtin_module_names
+=> ('_abc', '_ast', '_codecs', '_collections', '_functools', '_imp', '_io', '_locale', '_operator', '_signal', '_sre', '_stat', '_string', '_symtable', '_thread', '_tracemalloc', '_warnings', '_weakref', 'atexit', 'builtins', 'errno', 'faulthandler', 'gc', 'itertools', 'marshal', 'posix', 'pwd', 'sys', 'time', 'xxsubtype')
+```
+위의 예문은 repl.it의 built-in module들의 모습이다 마지막에보면 sys가 포함되어 있음을 확인할 수 있다.
+또한 sys module은 .py의 형태로는 찾을 수 없다. C언어로 프로그래밍되어 python에 내장되어 있으며 ./Python/sysmodule.c의 위치에 존재하고 있다. 
+
+## Absolute path와 relative path의 차이점
+Absolute path와 relative path의 가장 큰 차이점은 경로를 보는 기준이 다르다는 것이다.
+
+Absolute path는 절대경로로 컴퓨터 상의 루트 디렉토리를 포함한다.
+그렇기 때문에
+```
+C:\사용자\desktop\python\pacage\module.py
+```
+이런식으로 최상위부터 경로가 지정된다.
+
+relative path는 상대경로로 루트 디렉토리를 포함하지 않는 주소를 갖는 경로로 가진다.
+
+그렇기 때문에 현재 참조하고 있는 문서가 항상 기준이며 그 문서를 기준으로 상위 폴더와 하위폴더, 현재폴더를 연결한다.
+
+```bash
+루트위치 /
+상위폴더 ../파일명
+현재폴더 ./파일명
+하위폴더 디렉토리명/파일명
+```
+위와 같이 나눌 수 있다.
