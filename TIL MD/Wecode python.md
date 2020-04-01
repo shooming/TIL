@@ -1526,11 +1526,11 @@ def return_elem_or_minus_one(index):
 
     return elem
 ```
-`def return_elem_or_minus_one(index)`함수는 inddex라는 매개변수를 받아 인덱스 수를 제한한다 하지만 예제이므로 list에는 1,2,3값만 넣기로 했다.
+`def return_elem_or_minus_one(index)`함수는 index라는 매개변수를 받아 인덱스 수를 제한한다 하지만 예제이므로 list에는 1,2,3값만 넣기로 했다.
 
 `try:`구문이다. 해당 구문은 일단 try 안의 문장을 실행시켜 에러가 있는지 체크를 한다 에러가 없다면 정상적으로 내용을 출력한다.
 
-`except IndexError:`는 `IndexError`는 inndex를 초과하해여 생기는 오류가 발생할때 실해되는 구문이다. 다른 에러로는 `ZeroDivisionError`가 있다.
+`except IndexError:`는 `IndexError`는 inndex를 초과해서 생기는 오류가 발생할때 실행되는 구문이다. 다른 에러로는 `ZeroDivisionError`가 있다.
 
 `except Exception as e:`는 IndexError가 아닌 오류가 날 경우 실행되는 구문이다. 그 뒤에 추가로 `as`문을 사용하여 에러메시지인 `Exception`을 변수 `e`에 저장하여 출력할 수 있다.
 ```python
